@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Butter & Bloom Bakery</title>
+  <style>
+    :root {
+      --cream: #fffaf2;
+      --pink: #f4d8d0;
+      --rose: #b85f58;
+      --brown: #49352d;
+      --muted: #806d62;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: Georgia, 'Times New Roman', serif; background: var(--cream); color: var(--brown); }
+    button, input { font: inherit; }
+    .topbar { background: var(--brown); color: #fff8ef; text-align: center; padding: 9px 16px; font: 13px Arial, sans-serif; letter-spacing: .5px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 7%; background: var(--cream); position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 12px #49352d0d; }
+    .logo { font-size: 27px; font-weight: bold; color: var(--rose); white-space: nowrap; }
+    .logo span { color: var(--brown); }
+    nav { display: flex; gap: 25px; }
+    nav a { color: var(--brown); text-decoration: none; font: 14px Arial, sans-serif; }
+    nav a:hover { color: var(--rose); }
+    .cart-button, .primary-btn { border: 0; background: var(--rose); color: white; padding: 12px 18px; border-radius: 5px; cursor: pointer; font: 14px Arial, sans-serif; }
+    .cart-button:hover, .primary-btn:hover { background: #994b45; }
+    .hero { min-height: 480px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 35px; padding: 65px 9%; background: #f7e7dc; }
+    .eyebrow { text-transform: uppercase; letter-spacing: 3px; color: var(--rose); font: bold 12px Arial, sans-serif; margin-bottom: 18px; }
+    h1 { font-size: clamp(42px, 5vw, 65px); line-height: 1.05; margin-bottom: 20px; }
+    .hero p { color: var(--muted); font: 16px/1.8 Arial, sans-serif; max-width: 470px; margin-bottom: 27px; }
+    .hero-image { min-height: 340px; border-radius: 48% 48% 12px 12px; background: linear-gradient(#0001,#0002), url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1100&q=85') center/cover; box-shadow: 18px 18px 0 #e9c6b8; }
+    section { padding: 75px 8%; }
+    .section-heading { text-align: center; margin-bottom: 35px; }
+    .section-heading h2 { font-size: 38px; margin-bottom: 10px; }
+    .section-heading p { color: var(--muted); font: 14px Arial, sans-serif; }
+    .toolbar { display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn { border: 1px solid #e4c9bd; color: var(--brown); background: transparent; border-radius: 30px; padding: 9px 16px; cursor: pointer; font: 13px Arial, sans-serif; }
+    .filter-btn.active, .filter-btn:hover { background: var(--brown); color: white; border-color: var(--brown); }
+    .search { border: 1px solid #e4c9bd; border-radius: 30px; padding: 10px 16px; min-width: 220px; background: white; outline-color: var(--rose); font: 14px Arial, sans-serif; }
+    .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+    .product { background: white; border-radius: 9px; overflow: hidden; box-shadow: 0 7px 25px #49352d0d; transition: transform .2s; }
+    .product:hover { transform: translateY(-5px); }
+    .product img { width: 100%; height: 220px; object-fit: cover; display: block; }
+    .product-info { padding: 18px; }
+    .product-info h3 { font-size: 21px; margin-bottom: 7px; }
+    .product-info p { color: var(--muted); font: 13px/1.5 Arial, sans-serif; min-height: 39px; }
+    .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+    .price { color: var(--rose); font: bold 17px Arial, sans-serif; }
+    .add-btn { border: 0; background: #f4e3dc; color: var(--brown); padding: 9px 13px; border-radius: 4px; cursor: pointer; font: 13px Arial, sans-serif; }
+    .add-btn:hover { background: var(--pink); }
+    .about { background: #f7e7dc; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 45px; }
+    .about img { width: 100%; height: 330px; object-fit: cover; border-radius: 8px; }
+    .about h2 { font-size: 38px; margin-bottom: 17px; }
+    .about p { color: var(--muted); font: 15px/1.9 Arial, sans-serif; margin-bottom: 14px; }
+    .contact { text-align: center; }
+    .contact p { color: var(--muted); font: 15px/1.8 Arial, sans-serif; }
+    footer { background: var(--brown); color: #fff8ef; text-align: center; padding: 27px 15px; font: 13px Arial, sans-serif; }
+    .cart-panel { position: fixed; right: -420px; top: 0; width: min(390px, 100%); height: 100vh; background: white; z-index: 30; padding: 25px; box-shadow: -8px 0 30px #0002; transition: right .3s; display: flex; flex-direction: column; }
+    .cart-panel.open { right: 0; }
+    .cart-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 18px; }
+    .cart-head h2 { font-size: 25px; }
+    .close-cart { border: 0; background: none; font-size: 27px; cursor: pointer; color: var(--brown); }
+    .cart-items { flex: 1; overflow: auto; padding: 15px 0; }
+    .cart-row { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #eee; font: 14px Arial, sans-serif; }
+    .cart-row button { border: 0; background: none; color: var(--rose); cursor: pointer; }
+    .cart-total { border-top: 1px solid #eee; padding-top: 18px; font: bold 17px Arial, sans-serif; display: flex; justify-content: space-between; margin-bottom: 15px; }
+    .checkout { width: 100%; }
+    .empty { color: var(--muted); font: 14px Arial, sans-serif; padding-top: 20px; }
+    .overlay { position: fixed; inset: 0; background: #0005; z-index: 20; display: none; }
+    .overlay.show { display: block; }
+    @media (max-width: 800px) {
+      header { padding: 16px 5%; flex-wrap: wrap; }
+      nav { order: 3; width: 100%; justify-content: center; gap: 18px; }
+      .hero, .about { grid-template-columns: 1fr; padding: 50px 7%; }
+      .hero-image { min-height: 280px; }
+      .products { grid-template-columns: repeat(2, 1fr); }
+      section { padding: 55px 6%; }
+    }
+    @media (max-width: 540px) {
+      .products { grid-template-columns: 1fr; }
+      .product img { height: 240px; }
+      .toolbar { justify-content: center; }
+      .search { width: 100%; }
+      nav { gap: 13px; }
+      nav a { font-size: 12px; }
+      .logo { font-size: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">FRESHLY BAKED EVERY DAY · MADE WITH LOVE</div>
+  <header>
+    <div class="logo">Butter <span>&</span> Bloom</div>
+    <nav>
+      <a href="#home">Home</a><a href="#menu">Our Menu</a><a href="#about">About</a><a href="#contact">Contact</a>
+    </nav>
+    <button class="cart-button" id="openCart">Cart (<span id="cartCount">0</span>)</button>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div>
+        <div class="eyebrow">A little sweetness in every bite</div>
+        <h1>Baked fresh.<br>Made with love.</h1>
+        <p>From buttery croissants to celebration cakes, discover handmade treats prepared fresh in our little bakery every morning.</p>
+        <a href="#menu"><button class="primary-btn">Explore our menu</button></a>
+      </div>
+      <div class="hero-image" role="img" aria-label="Fresh artisan bread"></div>
+    </section>
+
+    <section id="menu">
+      <div class="section-heading">
+        <div class="eyebrow">Our favourites</div>
+        <h2>Fresh from the oven</h2>
+        <p>Find your new favourite treat.</p>
+      </div>
+      <div class="toolbar">
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="cakes">Cakes</button>
+          <button class="filter-btn" data-filter="pastries">Pastries</button>
+          <button class="filter-btn" data-filter="bread">Bread</button>
+        </div>
+        <input class="search" id="searchInput" type="search" placeholder="Search treats..." aria-label="Search treats">
+      </div>
+      <div class="products" id="productGrid">
+        <article class="product" data-category="cakes" data-name="strawberry cake">
+          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80" alt="Strawberry celebration cake">
+          <div class="product-info"><h3>Strawberry Cake</h3><p>Soft vanilla sponge with strawberry cream.</p><div class="product-bottom"><span class="price">₹650</span><button class="add-btn" data-name="Strawberry Cake" data-price="650">Add to cart +</button></div></div>
+        </article>
+        <article class="product" data-category="pastries" data-name="butter croissant">
+          <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80" alt="Golden butter croissants">
+          <div class="product-info"><h3>Butter Croissant</h3><p>Flaky, golden and made with real butter.</p><div class="product-bottom"><span class="price">₹120</span><button class="add-btn" data-name="Butter Croissant" data-price="120">Add to cart +</button></div></div>
+        </article>
+        <article class="product" data-category="cakes" data-name="chocolate cupcake">
+          <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=800&q=80" alt="Chocolate cupcakes">
+          <div class="product-info"><h3>Chocolate Cupcake</h3><p>Rich chocolate sponge with creamy frosting.</p><div class="product-bottom"><span class="price">₹90</span><button class="add-btn" data-name="Chocolate Cupcake" data-price="90">Add to cart +</button></div></div>
+        </article>
+        <article class="product" data-category="bread" data-name="artisan sourdough">
+          <img src="https://images.unsplash.com/photo-1585478259715-876acc5be8eb?auto=format&fit=crop&w=800&q=80" alt="Artisan sourdough bread">
+          <div class="product-info"><h3>Artisan Sourdough</h3><p>A crusty loaf with a soft, airy centre.</p><div class="product-bottom"><span class="price">₹220</span><button class="add-btn" data-name="Artisan Sourdough" data-price="220">Add to cart +</button></div></div>
+        </article>
+        <article class="product" data-category="pastries" data-name="blueberry muffin">
+          <img src="https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&w=800&q=80" alt="Blueberry muffins">
+          <div class="product-info"><h3>Blueberry Muffin</h3><p>Fluffy muffin filled with juicy blueberries.</p><div class="product-bottom"><span class="price">₹110</span><button class="add-btn" data-name="Blueberry Muffin" data-price="110">Add to cart +</button></div></div>
+        </article>
+        <article class="product" data-category="cakes" data-name="red velvet cake">
+          <img src="https://images.unsplash.com/photo-1616541823729-00fe0-be8a2c?auto=format&fit=crop&w=800&q=80" alt="Red velvet cake slice">
+          <div class="product-info"><h3>Red Velvet Cake</h3><p>Classic cocoa sponge with cream cheese icing.</p><div class="product-bottom"><span class="price">₹180</span><button class="add-btn" data-name="Red Velvet Cake" data-price="180">Add to cart +</button></div></div>
+        </article>
+      </div>
+      <p id="noResults" class="empty" style="display:none;text-align:center">No treats found. Try another search.</p>
+    </section>
+
+    <section class="about" id="about">
+      <img src="https://images.unsplash.com/photo-1556217477-d325251ece38?auto=format&fit=crop&w=1000&q=80" alt="Baker preparing fresh pastries">
+      <div><div class="eyebrow">Our story</div><h2>Small batches, big love.</h2><p>Butter & Bloom began with a simple idea: good days deserve good bakes. We make our treats in small batches using carefully chosen ingredients.</p><p>Whether it is your morning pastry or a cake for a special day, we are happy to add a little sweetness to it.</p></div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="eyebrow">Come say hello</div><h2 style="font-size:38px;margin-bottom:14px">Visit our bakery</h2>
+      <p>12 Garden Street, Your City</p><p>Open daily · 9:00 AM – 8:00 PM</p><p>Email: hello@butterandbloom.example</p>
+    </section>
+  </main>
+
+  <footer>© 2026 Butter & Bloom Bakery · Freshly baked with love.</footer>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart-panel" id="cartPanel" aria-label="Shopping cart">
+    <div class="cart-head"><h2>Your cart</h2><button class="close-cart" id="closeCart" aria-label="Close cart">×</button></div>
+    <div class="cart-items" id="cartItems"><p class="empty">Your cart is empty.</p></div>
+    <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="primary-btn checkout" id="checkoutBtn">Place sample order</button>
+  </aside>
+
+  <script>
+    const cart = [];
+    const cartPanel = document.getElementById('cartPanel');
+    const overlay = document.getElementById('overlay');
+    const cartItems = document.getElementById('cartItems');
+
+    function openCart() {
+      cartPanel.classList.add('open');
+      overlay.classList.add('show');
+    }
+    function closeCart() {
+      cartPanel.classList.remove('open');
+      overlay.classList.remove('show');
+    }
+    document.getElementById('openCart').addEventListener('click', openCart);
+    document.getElementById('closeCart').addEventListener('click', closeCart);
+    overlay.addEventListener('click', closeCart);
+
+    document.querySelectorAll('.add-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const name = button.dataset.name;
+        const price = Number(button.dataset.price);
+        const existing = cart.find(item => item.name === name);
+        if (existing) existing.quantity++;
+        else cart.push({ name, price, quantity: 1 });
+        renderCart();
+        button.textContent = 'Added ✓';
+        setTimeout(() => button.textContent = 'Add to cart +', 900);
+      });
+    });
+
+    function renderCart() {
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      document.getElementById('cartCount').textContent = count;
+      document.getElementById('cartTotal').textContent = '₹' + total;
+      if (!cart.length) {
+        cartItems.innerHTML = '<p class="empty">Your cart is empty.</p>';
+        return;
+      }
+      cartItems.innerHTML = cart.map((item, index) => `
+        <div class="cart-row">
+          <div><strong>${item.name}</strong><br>₹${item.price} × ${item.quantity}</div>
+          <div><strong>₹${item.price * item.quantity}</strong><br><button data-remove="${index}">Remove</button></div>
+        </div>`).join('');
+      cartItems.querySelectorAll('[data-remove]').forEach(button => {
+        button.addEventListener('click', () => {
+          cart.splice(Number(button.dataset.remove), 1);
+          renderCart();
+        });
+      });
+    }
+
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      if (!cart.length) {
+        alert('Your cart is empty. Add a treat first!');
+        return;
+      }
+      alert('Thank you! This is a demo website, so your order has not been sent.');
+      cart.length = 0;
+      renderCart();
+      closeCart();
+    });
+
+    let activeFilter = 'all';
+    const searchInput = document.getElementById('searchInput');
+    function filterProducts() {
+      const term = searchInput.value.toLowerCase().trim();
+      let visible = 0;
+      document.querySelectorAll('.product').forEach(product => {
+        const matchesCategory = activeFilter === 'all' || product.dataset.category === activeFilter;
+        const matchesSearch = product.dataset.name.includes(term);
+        product.style.display = matchesCategory && matchesSearch ? '' : 'none';
+        if (matchesCategory && matchesSearch) visible++;
+      });
+      document.getElementById('noResults').style.display = visible ? 'none' : 'block';
+    }
+    document.querySelectorAll('.filter-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelector('.filter-btn.active').classList.remove('active');
+        button.classList.add('active');
+        activeFilter = button.dataset.filter;
+        filterProducts();
+      });
+    });
+    searchInput.addEventListener('input', filterProducts);
+  </script>
+</body>
+</html>
